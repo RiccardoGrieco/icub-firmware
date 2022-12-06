@@ -2484,7 +2484,7 @@ bool embot::app::application::theSTRAIN::get(const embot::prot::can::analog::pol
     
     if(allchannels)
     {   // we can operate on all channels
-        replyinfo.numberofvalues = 6;
+        replyinfo.numberofvalues = reply.adcvaluesmaxnumber/replyinfo.valuespermessages;
         replyinfo.valueindex = 0; 
     }
     else

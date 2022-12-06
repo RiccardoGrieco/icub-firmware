@@ -790,14 +790,17 @@ namespace embot { namespace prot { namespace can { namespace analog { namespace 
     bool Message_GET_CH_ADC::reply(embot::prot::can::Frame &outframe, const std::uint8_t sender, const ReplyInfo &replyinfo)
     {
         uint8_t valueindex = std::min(static_cast<uint8_t>(ReplyInfo::adcvaluesmaxnumber-1), static_cast<uint8_t>(replyinfo.valueindex));
-        std::uint8_t dd[7] = {0};
+        int valuesinreply = replyinfo.channel != embot::core::tointegral(StrainChannel::all) ? 1 : replyinfo.valuespermessages;
+        std::uint8_t dd[9] = {0};
         dd[0] = (replyinfo.channel != embot::core::tointegral(StrainChannel::all)) ? replyinfo.channel : valueindex;
         dd[1] = (true == replyinfo.valueiscalibrated) ? (1) : (0);
-        dd[2] = (replyinfo.adcvalues[valueindex] >> 8) & 0xff;      // important note: the strain uses big endianess ... 
-        dd[3] = replyinfo.adcvalues[valueindex] & 0xff;             
-
+        for(int i=0; i<replyinfo.valuespermessages; i++)
+        {
+            dd[(i+1)*2] = (replyinfo.adcvalues[(valueindex*valuesinreply)+i] >> 8) & 0xff;      // important note: the strain uses big endianess ...
+            dd[(i+1)*2 + 1] = replyinfo.adcvalues[(valueindex*valuesinreply)+i] & 0xff;
+        }
         
-        std::uint8_t datalen = 4;
+        std::uint8_t datalen = 2*(\replyinfo.valuespermessages+1);
         
         frame_set_sender(outframe, sender);
         frame_set_clascmddestinationdata(outframe, Clas::pollingAnalogSensor, static_cast<std::uint8_t>(CMD::GET_CH_ADC), candata.from, dd, datalen);

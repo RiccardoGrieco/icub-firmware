@@ -572,6 +572,7 @@ namespace embot { namespace prot { namespace can { namespace analog { namespace 
         struct ReplyInfo
         {
             static constexpr uint8_t adcvaluesmaxnumber = 6;
+            static constexpr uint8_t valuespermessage = 3; //TODO can be set from command
             std::uint8_t        channel {0};    // use StrainChannel and also StrainChannel::all
             bool                valueiscalibrated {true};
             std::uint8_t        valueindex {0};
