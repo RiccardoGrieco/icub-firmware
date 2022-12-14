@@ -194,7 +194,7 @@ namespace embot { namespace prot { namespace can {
                     frame.data[0] = cmd & 0x7F;
                 }
                 
-                std::uint8_t s = (sizeofdatainframe>7) ? 7 : sizeofdatainframe;
+                std::uint8_t s = (sizeofdatainframe>9) ? 9 : sizeofdatainframe;
                 if((nullptr != data) && (s>0))
                 {
                     std::memmove(&frame.data[1], data, s);
@@ -265,7 +265,7 @@ namespace embot { namespace prot { namespace can {
     
     bool frame_set_size(embot::prot::can::Frame &frame, std::uint8_t size, bool verify)
     {
-        frame.size = (size > 8) ? (8) : (size);
+        frame.size = (size > 9) ? (9) : (size);
         if(verify)
         {
             if(size != frame.size)
